@@ -16,12 +16,6 @@ class Solver(inputFilename: String) {
     private val rows = gridLines.size
     private val cols = gridLines[0].length
 
-    private val initialVowelWords: List<String> =
-        words.filter { word -> word[0] in VOWELS }
-
-    private val initialConsonantWords: List<String> =
-        words.filter { word -> word[0] !in VOWELS }
-
     /** Unique values, ordered alphabetically for all four of these lists. */
     private val initialVowels: List<Char> =
         words.filter { word -> word[0] in VOWELS }
@@ -50,9 +44,7 @@ class Solver(inputFilename: String) {
             .distinct()
             .sorted()
 
-    private val initialVowelCells: MutableList<Pair<Int, Int>> = mutableListOf()
-
-    private val initialConsonantCells: MutableList<Pair<Int, Int>> = mutableListOf()
+    private val initialCells: MutableList<Pair<Int, Int>> = mutableListOf()
 
     private val emptyGrid: EmptyGrid = buildEmptyGrid()
 
@@ -62,12 +54,12 @@ class Solver(inputFilename: String) {
                 when (gridChar) {
                     'v' -> subsequentVowels
                     'V' -> {
-                        initialVowelCells.add(Pair(row, col))
+                        initialCells.add(Pair(row, col))
                         initialVowels
                     }
                     'c' -> subsequentConsonants
                     'C' -> {
-                        initialConsonantCells.add(Pair(row, col))
+                        initialCells.add(Pair(row, col))
                         initialConsonants
                     }
                     else ->
@@ -85,9 +77,11 @@ class Solver(inputFilename: String) {
                 null -> {
                     lettersPlacedAlready[cellsPlacedAlready[index]] = c
                 }
+
                 c -> {
                     // OK
                 }
+
                 else -> {
                     // Unexpected.
                     println("ERROR placing $index $c in ${cellsPlacedAlready[index]}, ALREADY $lettersPlacedAlready")
@@ -201,9 +195,11 @@ class Solver(inputFilename: String) {
     }
 
     fun solve() {
-        val vowelsPathsMap = findAllPaths(initialVowelCells, initialVowelWords)
-        val consonantsPathsMap = findAllPaths(initialConsonantCells, initialConsonantWords)
-        solveWithPathsToDepth(0, vowelsPathsMap + consonantsPathsMap, mutableMapOf())
+        solveWithPathsToDepth(
+            0,
+            findAllPaths(initialCells, words),
+            mutableMapOf()
+        )
     }
 
     companion object {

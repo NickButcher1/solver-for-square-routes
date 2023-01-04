@@ -6,12 +6,12 @@ package squareroutes
 data class EmptyGrid(
     val possibleLetters: List<List<List<Char>>>
 ) {
-    private val numRows = possibleLetters.size
-    private val numCols = possibleLetters[0].size
-
     val canMoveTo: MutableList<List<List<Pair<Int, Int>>>> = mutableListOf()
 
     init {
+        val numRows = possibleLetters.size
+        val numCols = possibleLetters[0].size
+
         for (r in (0 until numRows)) {
 
             val canMoveToForRow: MutableList<List<Pair<Int, Int>>> = mutableListOf()
